@@ -29,3 +29,7 @@ class TransactionForQuery(BaseTransaction):
     senderId: int
     receiverId: int
     amount: float
+    
+##Order
+##OrderDetail
+##Product
