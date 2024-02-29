@@ -1,7 +1,9 @@
 
 from database import database
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float,ForeignKey
+from sqlalchemy.orm import relationship
 
+arbitrary_types_allowed = True
 
 class User(database.Base):
     __tablename__ = "users"
@@ -26,17 +28,27 @@ class Order(database.Base):
     id = Column(Integer, primary_key=True, index=True)
     orderStatus=Column(Integer) # 0 la chua giao 1 la dang giao 2 la da giao thanh cong
     description=Column(Integer)
+    totalPrice=Column(Integer) #gia tien
+    order_details = relationship('OrderDetail', back_populates='Order')
+    
+    
 class OrderDetail(database.Base):
     __tablename__ = "OrderDetail"
     id = Column(Integer, primary_key=True, index=True)
-    orderId=Column(Integer)  #chung 1 orderId 
-    productId=Column(Integer)
-    quantity=Column(Integer,default=0.0)
+    dateStart=Column(String) 
+    dateEnd=Column(String)
+    quantity=Column(Integer,default=0.0) # so luong
+    order = relationship('Order', back_populates='OrderDetail')
+    product = relationship('Product', back_populates='OrderDetail')
+    orderId=Column(Integer,ForeignKey('Order.id'))  #chung 1 orderId 
+    productId=Column(Integer,ForeignKey('Product.id'))
+    
+    
 class Product(database.Base):
     __tablename__ = "Product"
     id = Column(Integer, primary_key=True, index=True)    
     image=Column(String)
     name=Column(String)
-    amount=Column(Float,default=0.0)
-    # orderDetailId=Column(Integer)
+    amount=Column(Float,default=0.0)  #gia tien
+    order_details = relationship('OrderDetail', back_populates='Product')
     

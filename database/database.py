@@ -12,4 +12,4 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+Base = declarative_base() #tra ve 1 lop, ke thua tu lop nay mo hinh SQLAIchemy
