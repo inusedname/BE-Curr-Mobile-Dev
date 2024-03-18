@@ -30,51 +30,49 @@ class TransactionForQuery(BaseTransaction):
     receiverId: int
     amount: float
     
-##Order
-class BaseOrder(BaseModel):
-   pass
 
-class OrderForCreate(BaseOrder):
-    orderStatus:int
-    description:String
-    totalPrice:float
-    
-class OrderForQuery(BaseOrder):
-    id:int
-    orderStatus:int
-    description:String
-    totalPrice:float   
-      
-##OrderDetail
-class BaseOrderDetail(BaseModel):
-    pass
-
-class OrderDetailForCreate(BaseOrderDetail):
-    orderId:int
-    productId:int
-    dateStart:String
-    dateEnd : String
-    quantity:Integer
-    
-class OrderDetailForQuery(BaseOrderDetail):
-    id:int
-    orderId:int
-    productId:int
-    dateStart:String
-    dateEnd : String
-    quantity:Integer
-    
 ##Product
 class BaseProduct(BaseModel):
-    pass
-
+    pass 
 class ProductForCreate(BaseProduct):
-    image:String
     name:String
-    amount:float
-    
+    description:String
+    image:String
+    suppiler:String
+    price:Float
+
 class ProductForQuery(BaseProduct):
-    id : int 
-    image:String
+    id:int
     name:String
-    amount:float 
+    description:String
+    image:String
+    suppiler:String
+    price:Float
+##Order
+class BaseOrder(BaseModel):
+    pass
+class OrderForCreate(BaseOrder):
+    startDate:Date
+    endDate:Date
+    shipToAddress: String
+    status:int
+    totalPrice:float
+class OrderForQuery(BaseOrder):
+    id:int
+    startDate:Date
+    endDate:Date
+    shipToAddress: String
+    status:int
+    totalPrice:float
+    
+##Notification
+
+class BaseNotification(BaseModel):
+    pass 
+class NotificationForCreate(BaseNotification):
+    createOn:Date
+    cotent:String
+class NotificationForQuery(BaseNotification):
+    id:int
+    createOn:Date
+    cotent:String

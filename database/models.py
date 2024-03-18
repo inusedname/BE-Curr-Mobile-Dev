@@ -1,10 +1,10 @@
 
 from database import database
-from sqlalchemy import Column, Integer, String, Float,ForeignKey
+from sqlalchemy import Column, Integer, String, Float,ForeignKey,Date
 from sqlalchemy.orm import relationship
-
+from sqlalchemy.orm import validates
 arbitrary_types_allowed = True
-
+import datetime
 class User(database.Base):
     __tablename__ = "users"
 
@@ -20,35 +20,49 @@ class Transaction(database.Base):
     receiverId = Column(Integer)
     amount = Column(Float, default=0.0)
     
-#Luong hoat dong: lay tat ca productId dua vao OrderDetail, Tao 1 mao key la productId, value la so luong cua no
-#Tao 1 list de chua Product cung voi amount cua chung
-#Dua vao OrderDetail de lay ra gia tri
-class Order(database.Base):
-    __tablename__ = "Order"
-    id = Column(Integer, primary_key=True, index=True)
-    orderStatus=Column(Integer) # 0 la chua giao 1 la dang giao 2 la da giao thanh cong
-    description=Column(Integer)
-    totalPrice=Column(Integer) #gia tien
-    order_details = relationship('OrderDetail', back_populates='Order')
-    
-    
-class OrderDetail(database.Base):
-    __tablename__ = "OrderDetail"
-    id = Column(Integer, primary_key=True, index=True)
-    dateStart=Column(String) 
-    dateEnd=Column(String)
-    quantity=Column(Integer,default=0.0) # so luong
-    order = relationship('Order', back_populates='OrderDetail')
-    product = relationship('Product', back_populates='OrderDetail')
-    orderId=Column(Integer,ForeignKey('Order.id'))  #chung 1 orderId 
-    productId=Column(Integer,ForeignKey('Product.id'))
-    
-    
+
+
+#---------------------------------------------------------------------#
+
+from enum import Enum
+
+class OrderStatus(Enum):
+    shipping = 0
+    delivered = 1
+    paid:2
+from abc import ABC #lop truu tuong
 class Product(database.Base):
-    __tablename__ = "Product"
-    id = Column(Integer, primary_key=True, index=True)    
-    image=Column(String)
+    __tablename__ = "product"
+    id = Column(Integer,primary_key=True,index=True)
     name=Column(String)
-    amount=Column(Float,default=0.0)  #gia tien
-    order_details = relationship('OrderDetail', back_populates='Product')
+    description=Column(String)
+    image=Column(String)
+    suppiler=Column(String) 
+    price=Column(Float,default=0.0) 
+class Order(database.Base):
+    __tablename__ = "order"
+    id = Column(Integer,primary_key=True,index=True)
+    startDate= Column(Date)
+    endDate=Column(Date)
+    shipToAddress = Column(String)
+    status=Column(Integer)
+    totalPrice=Column(Float,default=0.0)
+    @validates('status')
+    def validate_status(self, key, value):
+        if not isinstance(value, OrderStatus):
+            raise ValueError("Status must be an instance of OrderStatus Enum")
+        return value.value
+    def __init__(self, startDate, endDate, shipToAddress, status, totalPrice):
+        self.startDate = datetime.datetime.strptime(startDate, '%Y-%m-%d').date()
+        self.endDate = datetime.datetime.strptime(endDate, '%Y-%m-%d').date()
+        self.shipToAddress = shipToAddress
+        self.status = status
+        self.totalPrice = totalPrice
+class Notification(database.Base):
+    __tablename__ = "notification"
+    id = Column(Integer,primary_key=True,index=True)
+    createOn=Column(Date)
+    cotent=Column(String)
+    
+
     

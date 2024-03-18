@@ -1,5 +1,5 @@
 import bcrypt
-from database.models import Order, OrderDetail, Product, User, Transaction
+from database.models import Order, Product, User, Transaction,Notification
 from database import schemas
 from sqlalchemy.orm import Session
 
@@ -39,39 +39,32 @@ def do_transaction(db: Session, trans: Transaction):
 
 
 def create_product(db:Session,product:schemas.ProductForCreate):
-    db_product=Product(imgae=product.image,name=product.name,amount=product.amount)
+    db_product=Product(name=product.name,description=product.description,image=product.image,supplier=product.suppiler,price=product.price)
     db.add(db_product)
     db.commit()
     db.refresh(db_product)
     return db_product
-def get_product(db:Session, product_id:int):
+def get_product(db:Session,product_id:int):
     return db.query(Product).filter(Product.id==product_id).first()
-def get_AllProduct(db:Session):
-    products=db.query(Product).all()
-    return products
 
-def create_order(db:Session, order:schemas.OrderForCreate):
-    db_order = Order(orderStatus=order.orderStatus,description=order.description,totalPrice=order.totalPrice)
+##order
+def create_order(db:Session,order:schemas.OrderForCreate):
+    db_order=Order(startDate=order.startDate,endDate=order.endDate,shipToAddress=order.shipToAddress,status=order.status,totalPrice=order.totalPrice)
     db.add(db_order)
     db.commit()
     db.refresh(db_order)
     return db_order
-def get_order(db:Session, order_id: int):
-    return db.query(Order).filter(Order.id == order_id).first()
-def get_AllOrder(db:Session):
-    return db.query(Order).all()
 
+def get_order(db:Session,order_id:int):
+    return db.query(Order).filter(Order.id==order_id).first()
 
-def get_order_detail(db:Session, order_detail_id: int):
-    return db.query(OrderDetail).filter(OrderDetail.id == order_detail_id).first()
-
-def create_order_detail(db:Session, order_detail:schemas.OrderDetailForCreate,order_id: int, product_id: int):
-    db_order_detail = OrderDetail(dateStart=order_detail.dateStart,
-        dateEnd=order_detail.dateEnd,
-        quantity=order_detail.quantity,
-        orderId=order_id,
-        productId=product_id)
-    db.add(db_order_detail)
+##Notificatrion
+def create_notification(db:Session,notification:schemas.NotificationForCreate):
+    db_Notification=Notification(    createOn=notification.createOn, cotent=notification.cotent)
+    db.add(db_Notification)
     db.commit()
-    db.refresh(db_order_detail)
-    return db_order_detail
+    db.refresh(db_Notification)
+    return db_Notification
+
+def get_order(db:Session,notification_id:int):
+    return db.query(Notification).filter(Notification.id==notification_id).first()
