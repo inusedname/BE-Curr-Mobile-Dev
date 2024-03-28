@@ -7,12 +7,12 @@ class BaseUser(BaseModel):
     pass
 
 class UserForCreate(BaseUser):
-    phone: str
-    pw: str
+    username: str
+    email: str
+    password: str
 
 class UserForQuery(BaseUser):
-    id: int
-    phone: str
+    username: str
 
     
 ## Transaction
